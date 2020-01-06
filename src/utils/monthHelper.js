@@ -24,3 +24,12 @@ export function getMonthArray(daysInMonth, firstMonthWeekday) {
 }
 
 export const getDateAsString = (currentMont, day) => currentMont + "-" + day;
+
+const getMomentTime = time => moment(time, "HH:mm");
+
+export const sortByDate = unSortedArray =>
+  unSortedArray.sort(({ time: timeA }, { time: timeb }) => {
+    const momentA = getMomentTime(timeA);
+    debugger;
+    return momentA.diff(getMomentTime(timeb));
+  });

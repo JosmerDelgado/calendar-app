@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { commonInputHandleChange as handleChange } from "../../../utils/reactHelper";
-import { GithubPicker } from "react-color";
 import ColorPicker from "./ColorPicker";
 import {
   maxLenghtReminder,
@@ -35,7 +34,13 @@ const useStyle = makeStyles(theme => ({
   }
 }));
 
-const ReminderDialog = ({ open, handleClose, reminder, onSubmit }) => {
+const ReminderDialog = ({
+  open,
+  handleClose,
+  reminder,
+  onSubmit,
+  position
+}) => {
   const [scheduleTime, setScheduleTime] = useState(
     (reminder && reminder.time) || defaultTime
   );
@@ -53,7 +58,11 @@ const ReminderDialog = ({ open, handleClose, reminder, onSubmit }) => {
     } else if (reminderText.length > maxLenghtReminder) {
       setError("The reminder should be less than 30 characters");
     } else {
-      onSubmit(reminderCreator(reminderText, scheduleTime, color));
+      debugger;
+      onSubmit(
+        reminderCreator(reminderText, scheduleTime, color),
+        position >= 0 ? position : null
+      );
       setScheduleTime("");
       setReminder("");
       setColor("");
