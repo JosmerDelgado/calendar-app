@@ -21,7 +21,9 @@ const CalendarHeader = ({
         <InputLabel> Country</InputLabel>
         <Select value={selectedCountry} onChange={handleChangeCountry}>
           {countryList.map(country => (
-            <option value={country.value}>{country.name} </option>
+            <option key={country.value} value={country.value}>
+              {country.name}
+            </option>
           ))}
         </Select>
       </Grid>

@@ -24,6 +24,7 @@ const CurrentMonthBody = ({
             {weekdays.map((days, position) => {
               return (
                 <DayCell
+                  key={currentMont.date + days + position}
                   day={days}
                   reminder={reminder}
                   position={position}
