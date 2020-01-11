@@ -8,7 +8,6 @@ import DayCell from "./DayCell";
 
 const CurrentMonthBody = ({
   currentMont,
-  openModal,
   reminder,
   onDeleteReminder,
   holidays
@@ -29,7 +28,6 @@ const CurrentMonthBody = ({
                   reminder={reminder}
                   position={position}
                   currentMont={currentMont}
-                  openModal={openModal}
                   onDeleteReminder={onDeleteReminder}
                   holiday={holidays.some(holiday => holiday === days)}
                 />

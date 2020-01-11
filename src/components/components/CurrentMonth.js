@@ -7,6 +7,14 @@ import CurrentMonthBody from "./CurrentMonth/CurrentMonthBody";
 import ReminderDialog from "./CurrentMonth/ReminderDialog";
 import { sortByDate } from "../../utils/monthHelper";
 import { fetchHolidays, getHolidaysFrom } from "../../utils/requestHelper";
+import * as actionTypes from "../../store/actions/actionTypes";
+import {
+  createReminder,
+  updateReminder,
+  deleteReminder,
+  openModal
+} from "../../store/actions";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles({
   table: {
@@ -15,33 +23,40 @@ const useStyles = makeStyles({
   }
 });
 
-const CurrentMonth = ({ currentMont, country }) => {
+const CurrentMonth = ({
+  currentMont,
+  country,
+  createReminder,
+  reminderList: reminder,
+  updateReminder,
+  deleteReminder,
+  openModal,
+  modalState
+}) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const [reminder, setReminder] = useState({});
   const [holidays, setHolidays] = useState([]);
   const handleClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+    openModal(false);
+  }, [openModal]);
   const onSubmit = useCallback(
     (newReminder, position) => {
-      const currentReminderList = reminder[open.date] || [];
-      currentReminderList[
-        position !== null ? position : currentReminderList.length
-      ] = newReminder;
-      setReminder({
-        ...reminder,
-        [open.date]: sortByDate(currentReminderList)
-      });
+      if (position !== null) {
+        updateReminder({
+          reminder: newReminder,
+          date: modalState.date,
+          position
+        });
+      } else {
+        createReminder({ reminder: newReminder, date: modalState.date });
+      }
     },
-    [reminder, open]
+    [updateReminder, modalState.date, createReminder]
   );
 
   useEffect(() => {
     const apiCall = async () => {
       const [year, month] = currentMont.date.split("-");
       const response = await fetchHolidays(country, year, month);
-      debugger;
       if (!response.error && !response.data.errors) {
         setHolidays(getHolidaysFrom(response.data));
       }
@@ -49,9 +64,7 @@ const CurrentMonth = ({ currentMont, country }) => {
     apiCall();
   }, [country, currentMont.date]);
   const onDeleteReminder = date => key => () => {
-    const currentReminderList = reminder[date];
-    delete currentReminderList[key];
-    setReminder({ ...reminder, [date]: sortByDate(currentReminderList) });
+    deleteReminder({ date, position: key });
   };
 
   return (
@@ -61,17 +74,19 @@ const CurrentMonth = ({ currentMont, country }) => {
         <CurrentMonthBody
           holidays={holidays}
           reminder={reminder}
-          openModal={setOpen}
           currentMont={currentMont}
           onDeleteReminder={onDeleteReminder}
         />
       </Table>
-      {open && open.date && (
+      {modalState && modalState.date && (
         <ReminderDialog
-          reminder={reminder[open.date] && reminder[open.date][open.key]}
+          reminder={
+            reminder[modalState.date] &&
+            reminder[modalState.date][modalState.key]
+          }
           onSubmit={onSubmit}
-          open={open.date}
-          position={open.key}
+          open={modalState.date}
+          position={modalState.key}
           handleClose={handleClose}
         />
       )}
@@ -79,4 +94,18 @@ const CurrentMonth = ({ currentMont, country }) => {
   );
 };
 
-export default CurrentMonth;
+const mapStoreToProps = state => ({
+  reminderList: state.reminders,
+  modalState: state.modal
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    createReminder: payload => dispatch(createReminder(payload)),
+    updateReminder: payload => dispatch(updateReminder(payload)),
+    deleteReminder: payload => dispatch(deleteReminder(payload)),
+    openModal: action => dispatch(openModal(action))
+  };
+};
+
+export default connect(mapStoreToProps, mapDispatchToProps)(CurrentMonth);

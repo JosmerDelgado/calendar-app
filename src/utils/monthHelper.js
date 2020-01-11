@@ -30,6 +30,5 @@ const getMomentTime = time => moment(time, "HH:mm");
 export const sortByDate = unSortedArray =>
   unSortedArray.sort(({ time: timeA }, { time: timeb }) => {
     const momentA = getMomentTime(timeA);
-    debugger;
     return momentA.diff(getMomentTime(timeb));
   });

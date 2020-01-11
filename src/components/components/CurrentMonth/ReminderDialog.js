@@ -58,7 +58,6 @@ const ReminderDialog = ({
     } else if (reminderText.length > maxLenghtReminder) {
       setError("The reminder should be less than 30 characters");
     } else {
-      debugger;
       onSubmit(
         reminderCreator(reminderText, scheduleTime, color),
         position >= 0 ? position : null

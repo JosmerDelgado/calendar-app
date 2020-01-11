@@ -4,6 +4,8 @@ import { getDateAsString } from "../../../utils/monthHelper";
 import { makeStyles } from "@material-ui/styles";
 import AddIcon from "@material-ui/icons/Add";
 import ReminderRowList from "./DayCell/ReminderRowList";
+import { openModal } from "../../../store/actions";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles({
   addButton: {
@@ -80,4 +82,10 @@ const DayCell = ({
   );
 };
 
-export default DayCell;
+const mapDispatchToProps = dispatch => {
+  return {
+    openModal: action => dispatch(openModal(action))
+  };
+};
+
+export default connect(null, mapDispatchToProps)(DayCell);
