@@ -3,6 +3,7 @@ import { Grid, Typography, IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/styles";
+import testIds from "../../../../constants/testIds";
 
 const useStyle = makeStyles({
   container: {
@@ -36,7 +37,11 @@ const useStyle = makeStyles({
 const ReminderRow = ({ reminder, onDeleteReminder, onEditReminder }) => {
   const classes = useStyle({ reminder });
   return (
-    <Grid container className={classes.container}>
+    <Grid
+      container
+      className={classes.container}
+      data-testid={testIds.reminderRow}
+    >
       <Grid className={"textItem"} item>
         <Typography className={classes.reminderText}>
           {reminder.reminder}

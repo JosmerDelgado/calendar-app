@@ -6,6 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 import ReminderRowList from "./DayCell/ReminderRowList";
 import { openModal } from "../../../store/actions";
 import { connect } from "react-redux";
+import testIds from "../../../constants/testIds";
 
 const useStyles = makeStyles({
   addButton: {
@@ -71,6 +72,7 @@ const DayCell = ({
           <Fab
             color="primary"
             aria-label="add"
+            data-testid={testIds.fabButton(day)}
             className={classes.addButton}
             onClick={addNewReminder}
           >

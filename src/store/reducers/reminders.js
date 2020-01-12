@@ -1,6 +1,5 @@
 import * as actionTypes from "../actions/actionTypes";
 import { sortByDate } from "../../utils/monthHelper";
-import { openModal } from "../actions";
 
 const initialState = {};
 

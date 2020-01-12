@@ -2,18 +2,10 @@ import React, { useCallback, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Table } from "@material-ui/core";
 import CurrentMonthHeader from "./CurrentMonth/CurrentMonthHeader";
-import moment from "moment";
 import CurrentMonthBody from "./CurrentMonth/CurrentMonthBody";
 import ReminderDialog from "./CurrentMonth/ReminderDialog";
-import { sortByDate } from "../../utils/monthHelper";
 import { fetchHolidays, getHolidaysFrom } from "../../utils/requestHelper";
-import * as actionTypes from "../../store/actions/actionTypes";
-import {
-  createReminder,
-  updateReminder,
-  deleteReminder,
-  openModal
-} from "../../store/actions";
+import { deleteReminder, openModal } from "../../store/actions";
 import { connect } from "react-redux";
 
 const useStyles = makeStyles({
@@ -26,9 +18,7 @@ const useStyles = makeStyles({
 const CurrentMonth = ({
   currentMont,
   country,
-  createReminder,
   reminderList: reminder,
-  updateReminder,
   deleteReminder,
   openModal,
   modalState
@@ -38,21 +28,6 @@ const CurrentMonth = ({
   const handleClose = useCallback(() => {
     openModal(false);
   }, [openModal]);
-  const onSubmit = useCallback(
-    (newReminder, position) => {
-      if (position !== null) {
-        updateReminder({
-          reminder: newReminder,
-          date: modalState.date,
-          position
-        });
-      } else {
-        createReminder({ reminder: newReminder, date: modalState.date });
-      }
-    },
-    [updateReminder, modalState.date, createReminder]
-  );
-
   useEffect(() => {
     const apiCall = async () => {
       const [year, month] = currentMont.date.split("-");
@@ -84,7 +59,6 @@ const CurrentMonth = ({
             reminder[modalState.date] &&
             reminder[modalState.date][modalState.key]
           }
-          onSubmit={onSubmit}
           open={modalState.date}
           position={modalState.key}
           handleClose={handleClose}
@@ -101,8 +75,6 @@ const mapStoreToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    createReminder: payload => dispatch(createReminder(payload)),
-    updateReminder: payload => dispatch(updateReminder(payload)),
     deleteReminder: payload => dispatch(deleteReminder(payload)),
     openModal: action => dispatch(openModal(action))
   };

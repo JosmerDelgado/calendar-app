@@ -26,7 +26,7 @@ const ColorPicker = ({ color, setColor }) => {
           setShowPicker(true);
         }}
         className={classes.gridColor}
-      ></Button>
+      />
       {showPicker && (
         <GithubPicker
           className={classes.colorPicker}

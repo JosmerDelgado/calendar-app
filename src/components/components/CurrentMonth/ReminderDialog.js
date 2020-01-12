@@ -19,6 +19,9 @@ import {
   defaultTime
 } from "../../../constants/common";
 import { reminderCreator } from "../../../utils/reminderHelper";
+import testIds from "../../../constants/testIds";
+import { createReminder, updateReminder } from "../../../store/actions";
+import { connect } from "react-redux";
 
 const useStyle = makeStyles(theme => ({
   textField: {
@@ -39,7 +42,9 @@ const ReminderDialog = ({
   handleClose,
   reminder,
   onSubmit,
-  position
+  position,
+  updateReminder,
+  createReminder
 }) => {
   const [scheduleTime, setScheduleTime] = useState(
     (reminder && reminder.time) || defaultTime
@@ -58,13 +63,18 @@ const ReminderDialog = ({
     } else if (reminderText.length > maxLenghtReminder) {
       setError("The reminder should be less than 30 characters");
     } else {
-      onSubmit(
-        reminderCreator(reminderText, scheduleTime, color),
-        position >= 0 ? position : null
-      );
-      setScheduleTime("");
-      setReminder("");
-      setColor("");
+      const basicReminder = {
+        date: open,
+        reminder: reminderCreator(reminderText, scheduleTime, color)
+      };
+      if (position >= 0) {
+        updateReminder({
+          ...basicReminder,
+          position
+        });
+      } else {
+        createReminder(basicReminder);
+      }
       handleClose();
     }
   };
@@ -87,9 +97,15 @@ const ReminderDialog = ({
           fullWidth
           value={reminderText}
           onChange={handleChangeReminder}
+          inputProps={{ "data-testid": testIds.dialogTextField }}
         />
         {!!error && (
-          <Typography className={classes.errorLabel}>{error}</Typography>
+          <Typography
+            className={classes.errorLabel}
+            data-testid={testIds.textError}
+          >
+            {error}
+          </Typography>
         )}
         <Grid container>
           <Grid item xs={6}>
@@ -118,12 +134,23 @@ const ReminderDialog = ({
         <Button onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={preSubmit} color="primary">
-          Subscribe
+        <Button
+          onClick={preSubmit}
+          color="primary"
+          data-testid={testIds.confirmButton}
+        >
+          Confirm
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default ReminderDialog;
+const mapDispatchToProps = dispatch => {
+  return {
+    createReminder: payload => dispatch(createReminder(payload)),
+    updateReminder: payload => dispatch(updateReminder(payload))
+  };
+};
+
+export default connect(null, mapDispatchToProps)(ReminderDialog);
